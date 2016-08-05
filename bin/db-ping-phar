@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * @file
+ * @since 2016-08-05
+ */
+
+declare(ticks = 1);
+set_time_limit(0);
+
+// version check code by Sebastian Bergmann
+if (version_compare('5.6.0', PHP_VERSION, '>') === 1) {
+    fwrite(
+        STDERR,
+        'This version of PHPUnit requires PHP 5.6; using the latest version of PHP is highly recommended.'.PHP_EOL
+    );
+    die(1);
+}
+
+// timezone code by Sebastian Bergmann
+if (ini_get('date.timezone') === false) {
+    ini_set('date.timezone', 'UTC');
+}
+
+define('DP_COMPOSER_INSTALL', __DIR__.'/../vendor/autoload.php');
+require DP_COMPOSER_INSTALL;
+
+Ofbeaton\DbPing\Application::main();

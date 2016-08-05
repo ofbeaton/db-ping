@@ -10,8 +10,7 @@
     </target>
 
     <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
-        <exec executable="vbin/phpcs" passthru="true">
-        </exec>
+        <exec executable="vbin/phpcs" passthru="true"/>
         <exec executable="vbin/phpcs" passthru="true">
             <arg value="--report=checkstyle"/>
             <arg value="--report-file=logs/checkstyle.xml"/>
@@ -26,5 +25,52 @@
 
     <target name="check" depends="clean,phpcbf,phpcs"/>
 
-    <target name="build" depends="check"/>
+    <target name="build-phar" description="Creates the phar">
+        <mkdir dir="build"/>
+        <delete file="./build/db-ping.phar"/>
+        <exec command="git log -n1 --pretty=%ct HEAD" outputProperty="version.date" />
+        <exec command="git log --pretty=&quot;%H&quot; -n1 HEAD" outputProperty="version.hash" />
+        <echo msg="Removing composer require-dev..."/>
+        <exec command="composer config autoloader-suffix DbPingPhar${version.date}" passthru="true"/>
+        <exec command="composer install -q --no-dev" passthru="true"/>
+        <exec command="composer config autoloader-suffix --unset" passthru="true"/>
+        <pharpackage
+                destfile="./build/db-ping.phar"
+                basedir="./"
+                clistub="./bin/db-ping-phar"
+                compression="gzip">
+            <fileset dir="./">
+                <include name="build.xml" />
+                <include name="composer.json" />
+                <include name="composer.lock" />
+                <include name="*.dist" />
+                <include name="*.md" />
+            </fileset>
+            <fileset dir="./bin">
+                <include name="db-ping-phar" />
+            </fileset>
+            <fileset dir="./src">
+                <include name="**/*.php" />
+            </fileset>
+            <fileset dir="./vendor">
+                <include name="**/**" />
+                <exclude name="**/*Test*"/>
+            </fileset>
+            <metadata>
+                <element name="version" value="${version.date}" />
+                <element name="authors">
+                    <element name="Finlay Beaton">
+                        <element name="e-mail" value="ofbeaton@gmail.com" />
+                    </element>
+                    <element name="db-ping Community">
+                        <element name="website" value="https://github.com/ofbeaton/db-ping/graphs/contributors" />
+                    </element>
+                </element>
+            </metadata>
+        </pharpackage>
+        <echo msg="Restoring composer require-dev..."/>
+        <exec command="composer install -q" passthru="true"/>
+    </target>
+
+    <target name="build" depends="check,build-phar"/>
 </project>
