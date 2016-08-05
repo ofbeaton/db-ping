@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="db-ping" default="check" basedir=".">
+    <!-- thanks to joomla https://github.com/joomla/joomla-platform/blob/staging/build.xml -->
+
+    <target name="clean" description="Remove caches and logs">
+        <delete dir="logs"/>
+        <delete dir="build"/>
+        <mkdir dir="logs"/>
+        <mkdir dir="build"/>
+    </target>
+
+    <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
+        <exec executable="vbin/phpcs" passthru="true">
+        </exec>
+        <exec executable="vbin/phpcs" passthru="true">
+            <arg value="--report=checkstyle"/>
+            <arg value="--report-file=logs/checkstyle.xml"/>
+        </exec>
+    </target>
+
+    <target name="phpcbf" description="Fix code style using PHP_CodeSniffer">
+        <exec executable="vbin/phpcbf" passthru="true">
+            <arg value="--no-patch"/>
+        </exec>
+    </target>
+
+    <target name="phpcb" description="Aggregate tool reports with PHP_CodeBrowser">
+        <exec executable="vbin/phpcb" passthru="true">
+            <arg value="--log"/><arg path="logs"/>
+            <arg value="--source"/><arg path="src"/>
+            <arg value="--output"/><arg path="build/browser"/>
+            <arg value="--excludeOK"/>
+        </exec>
+    </target>
+
+    <target name="check" depends="clean,phpcbf,phpcs,phpcb"/>
+
+    <target name="build" depends="check"/>
+</project>

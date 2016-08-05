@@ -1,0 +1,47 @@
+{
+    "name": "ofbeaton/db-ping",
+    "license": "MIT",
+    "description": "Verify a Database server is responding.",
+    "keywords": ["database", "ping", "db", "mysql"],
+    "homepage": "https://github.com/ofbeaton/db-ping",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Finlay Beaton",
+            "email": "ofbeaton@gmail.com"
+        },
+        {
+            "name": "db-ping Community",
+            "homepage": "https://github.com/ofbeaton/db-ping/graphs/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ofbeaton\\DbPing\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ofbeaton\\DbPing\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "ext-pdo": "*",
+        "symfony/console": "^3.1",
+        "phing/phing": "^2.14"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^2.6",
+        "ofbeaton/granite": "^0.6.0",
+        "phpunit/phpunit": "^5.4",
+        "mayflower/php-codebrowser": "^1.1"
+    },
+    "suggest": {
+        "ext-pdo_mysql": "Verify MySQL servers",
+        "ext-pcntl": "Linux signal handling for gracefull CTRL-C"
+    },
+    "config": {
+        "bin-dir": "vbin"
+    }
+}
