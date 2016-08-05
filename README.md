@@ -8,18 +8,7 @@ db-ping verifies a database server is responding by executing a query in a timed
 Optionally includes slave replication checks.
 
 PHP 5.6+ console command that uses PDO to provide the database drivers:
-- [ ] CUBRID
-- [ ] Firebird
-- [ ] IBM
-- [ ] Informix
 - [x] MySQL
-- [ ] MS SQL Server (PDO_DBLIB)
-- [ ] MS SQL Server (PDO_SQLSRV)
-- [ ] ODBC and DB2
-- [ ] Oracle
-- [ ] PostgreSQL
-- [ ] 4D
-- SQLite - _Unplanned_
 
 ## Installing via Composer
 
