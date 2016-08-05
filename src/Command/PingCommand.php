@@ -14,6 +14,12 @@ abstract class PingCommand extends Command
 {
 
     /**
+     * @var float
+     * @since 2016-08-04
+     */
+    protected $badTime = 0.0;
+
+    /**
      * @var string
      * @since 2016-08-04
      */
@@ -42,6 +48,12 @@ abstract class PingCommand extends Command
      * @since 2016-08-04
      */
     protected $driver = null;
+
+    /**
+     * @var float
+     * @since 2016-08-05
+     */
+    protected $goodTime = 0.0;
 
     /**
      * @var InputInterface
@@ -78,6 +90,18 @@ abstract class PingCommand extends Command
 
     /**
      * @var float
+     * @since 2016-08-05
+     */
+    protected $sinceBad = null;
+
+    /**
+     * @var float
+     * @since 2016-08-05
+     */
+    protected $sinceGood = null;
+
+    /**
+     * @var float
      * @since 2016-08-04
      */
     protected $startTime = 0.0;
@@ -100,12 +124,18 @@ abstract class PingCommand extends Command
      */
     protected $stopTime = 0.0;
 
-
     /**
-     * @return void
-     * @since 2016-08-04
-     * @throws \RuntimeException Driver must be specified in configure().
+     * @var float
+     * @since 2016-08-05
      */
+    protected $totalTime = null;
+
+
+/**
+ * @return void
+ * @since 2016-08-04
+ * @throws \RuntimeException Driver must be specified in configure().
+ */
     protected function configure()
     {
         if ($this->driver === null) {
@@ -206,7 +236,13 @@ abstract class PingCommand extends Command
             \pcntl_signal(SIGINT, [$this, 'handleSigint']);
         }
 
+
         while ($iterations !== 0) {
+            $now = microtime(true);
+            if ($this->totalTime === null) {
+                $this->totalTime = $now;
+            }
+
             if ($signals === true) {
                 pcntl_signal_dispatch();
             }
@@ -218,11 +254,31 @@ abstract class PingCommand extends Command
                 $this->statsFailures++;
             }
 
+            if ($ret === true) {
+                if ($this->sinceBad !== null) {
+                    $this->badTime = ($this->badTime + ($now - $this->sinceBad));
+                    $this->sinceBad = null;
+                }
+
+                if ($this->sinceGood === null) {
+                    $this->sinceGood = $now;
+                }
+            } else {
+                if ($this->sinceGood !== null) {
+                    $this->goodTime = ($this->goodTime + ($now - $this->sinceGood));
+                    $this->sinceGood = null;
+                }
+
+                if ($this->sinceBad === null) {
+                    $this->sinceBad = $now;
+                }
+            }
+
             $iterations--;
             if ($iterations !== 0) {
                 usleep($delay);
             }
-        }
+        }//end while
 
         $this->stats($input, $output);
 
@@ -314,7 +370,13 @@ abstract class PingCommand extends Command
             $this->connected = true;
         } catch (\PDOException $e) {
             $this->stopTime = microtime(true);
-            $this->writeReply('connection failed: '.rtrim($e->getMessage(), PHP_EOL), $input, $output);
+
+            // No connection could be made because the target machine actively refused it.
+            if ($e->getCode() === 2002) {
+                $this->writeReply('connection refused.', $input, $output);
+            } else {
+                $this->writeReply('connection failed: '.rtrim($e->getMessage(), PHP_EOL.'.').'.', $input, $output);
+            }
             $this->dbh = null;
             $this->connected = false;
             return false;
@@ -352,15 +414,41 @@ abstract class PingCommand extends Command
      */
     protected function stats(InputInterface $input, OutputInterface $output)
     {
+        $now = microtime(true);
+
+        if ($this->sinceBad !== null) {
+            $this->badTime = ($this->badTime + ($now - $this->sinceBad));
+            $this->sinceBad = null;
+        }
+
+        if ($this->sinceGood !== null) {
+            $this->goodTime = ($this->goodTime + ($now - $this->sinceGood));
+            $this->sinceGood = null;
+        }
+
         $success = ($this->statsIterations - $this->statsFailures);
         $failPercent = round(($this->statsFailures / $this->statsIterations * 100.0));
+        $totalTime = ($now - $this->totalTime);
+        $totalTimeS = round($totalTime, 4);
+        $goodTimeS = round($this->goodTime, 4);
+        $badTimeS = round($this->badTime, 4);
+        if ($totalTime > 0.0) {
+            $badTimeP = round(($this->badTime / $totalTime * 100));
+        } else {
+            $badTimeP = 0.0;
+        }
+
         $output->writeln([
                           '--- '.$input->getOption('host').':'.$input->getOption('port')
                           .' database ping statistics ---',
                           $this->statsIterations.' tries, '
                                 .$success.' successes, '
                                 .$this->statsFailures.' failures, '
-                                .$failPercent.'% fail',
+                                .$failPercent.'% fail tries',
+                          $totalTimeS.'s time, '
+                         .$goodTimeS.'s success, '
+                         .$badTimeS.'s fail, '
+                         .$badTimeP.'% fail time',
                          ]);
     }//end stats()
 
@@ -380,11 +468,11 @@ abstract class PingCommand extends Command
      * @return float elapsed time
      * @since 2016-08-04
      */
-    protected function time()
+    protected function execTime()
     {
-        $time = round(($this->stopTime - $this->startTime), 4);
+        $time = round(($this->stopTime - $this->startTime) * 100.0);
         return $time;
-    }//end time()
+    }//end execTime()
 
 
     /**
@@ -396,7 +484,23 @@ abstract class PingCommand extends Command
      */
     protected function writeReply($msg, InputInterface $input, OutputInterface $output)
     {
-        $msg = 'from '.$input->getOption('host').':'.$input->getOption('port').': '.$msg.' time='.$this->time().' ms';
+        if ($this->sinceGood !== null) {
+            $sinceGood = round((microtime(true) - $this->sinceGood), 4);
+        } else {
+            $sinceGood = 0.0;
+        }
+
+        if ($this->sinceBad !== null) {
+            $sinceBad = round((microtime(true) - $this->sinceBad), 4);
+        } else {
+            $sinceBad = 0.0;
+        }
+        $msg = 'from '.$input->getOption('host').':'.$input->getOption('port').': '
+            .$msg
+            .' delay='.$input->getOption('delay').'ms,'
+            .' exec='.$this->execTime().'ms,'
+            .' since success='.$sinceGood.'s,'
+            .' since fail='.$sinceBad.'s';
         $output->writeln($msg);
     }//end writeReply()
 }//end class
