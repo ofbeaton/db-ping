@@ -140,6 +140,7 @@ abstract class PingCommand extends Command
 
         $this->addOption(
             'no-replication',
+            null,
             InputOption::VALUE_NONE,
             'Do not check replication status'
         );
