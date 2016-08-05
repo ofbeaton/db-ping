@@ -49,14 +49,14 @@ class MysqlCommand extends PingCommand
     protected function queryCheck(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption('no-replication') === false) {
-            $this->writeReply('check passed', $input, $output);
+            $this->writeReply('check passed.', $input, $output);
             return true;
         }
 
         $row = $this->checkStmt->fetch();
 
         if (empty($row) === true) {
-            $this->writeReply('check passed', $input, $output);
+            $this->writeReply('check passed.', $input, $output);
             return true;
         }
 
@@ -84,7 +84,7 @@ class MysqlCommand extends PingCommand
             return false;
         }
 
-        $this->writeReply('check passed', $input, $output);
+        $this->writeReply('check passed.', $input, $output);
         return true;
     }//end queryCheck()
 }//end class

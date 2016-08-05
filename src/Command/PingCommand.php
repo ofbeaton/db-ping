@@ -316,12 +316,16 @@ abstract class PingCommand extends Command
             // server has gone away
             if (isset($errorInfo[1]) === true && $errorInfo[1] === 2006) {
                 $this->connected = false;
-                $this->writeReply('connection lost', $input, $output);
+                $this->writeReply('connection lost.', $input, $output);
             } else {
-                $this->writeReply('check failed with exception: '.rtrim($e->getMessage(), PHP_EOL), $input, $output);
+                $this->writeReply(
+                    'check failed with exception: '.rtrim($e->getMessage(), PHP_EOL.'.').'.',
+                    $input,
+                    $output
+                );
             }
             return false;
-        }
+        }//end try
 
         error_reporting($errorLevel);
 
@@ -330,11 +334,11 @@ abstract class PingCommand extends Command
             // server has gone away
             if (isset($errorInfo[1]) === true && $errorInfo[1] === 2006) {
                 $this->connected = false;
-                $this->writeReply('connection lost', $input, $output);
+                $this->writeReply('connection lost.', $input, $output);
             } else {
                 $this->writeReply(
                     'check failed statement: ['.$this->dbh->errorCode().'] '
-                    .implode(' ', $errorInfo),
+                    .rtrim(implode(' ', $errorInfo), PHP_EOL.'.').'.',
                     $input,
                     $output
                 );
@@ -386,7 +390,7 @@ abstract class PingCommand extends Command
         $this->dbh->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->dbh->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
 
-        $this->writeReply('connected', $input, $output);
+        $this->writeReply('connected.', $input, $output);
         return true;
     }//end connect()
 
@@ -460,7 +464,7 @@ abstract class PingCommand extends Command
      */
     protected function queryCheck(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('check passed');
+        $output->writeln('check passed.');
         return true;
     }//end queryCheck()
 
