@@ -1,9 +1,11 @@
 # db-ping
-db-ping verifies a database server is responding by executing a query in a timed loop. Optionally includes slave replication checks.
+db-ping verifies a database server is responding by executing a query in a timed loop.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/ofbeaton/db-ping.svg?style=flat-square)](https://packagist.org/packages/ofbeaton/db-ping)
 [![Minimum PHP Version](https://img.shields.io/badge/php-%3E%3D%205.6-8892BF.svg?style=flat-square)](https://php.net/)
 [![Build Status](https://img.shields.io/travis/ofbeaton/db-ping/master.svg?style=flat-square)](https://travis-ci.org/ofbeaton/db-ping)
+
+Optionally includes slave replication checks.
 
 PHP 5.6+ console command that uses PDO to provide the database drivers:
 - [ ] CUBRID
