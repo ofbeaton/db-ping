@@ -18,8 +18,8 @@ PHP 5.6+ console command that uses PDO to provide the database drivers:
 - [ ] ODBC and DB2
 - [ ] Oracle
 - [ ] PostgreSQL
-- SQLite - _Unplanned_
 - [ ] 4D
+- SQLite - _Unplanned_
 
 ## Installing via Composer
 
