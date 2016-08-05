@@ -277,8 +277,8 @@ abstract class PingCommand extends Command
                 $this->writeReply('connection lost', $input, $output);
             } else {
                 $this->writeReply(
-                    'check failed statement: [' . $this->dbh->errorCode() . '] '
-                    . implode(' ', $errorInfo),
+                    'check failed statement: ['.$this->dbh->errorCode().'] '
+                    .implode(' ', $errorInfo),
                     $input,
                     $output
                 );
