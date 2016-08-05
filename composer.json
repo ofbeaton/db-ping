@@ -26,16 +26,14 @@
         }
     },
     "require": {
-        "php": ">=5.4",
+        "php": ">=5.6.0",
         "ext-pdo": "*",
-        "symfony/console": "^3.1",
-        "phing/phing": "^2.14"
+        "symfony/console": "^3.1"
     },
     "require-dev": {
+        "phing/phing": "^2.14",
         "squizlabs/php_codesniffer": "^2.6",
-        "ofbeaton/granite": "^0.6.0",
-        "phpunit/phpunit": "^5.4",
-        "mayflower/php-codebrowser": "^1.1"
+        "ofbeaton/granite": "^0.6.0"
     },
     "suggest": {
         "ext-pdo_mysql": "Verify MySQL servers",
@@ -43,5 +41,9 @@
     },
     "config": {
         "bin-dir": "vbin"
-    }
+
+    },
+    "bin": [
+        "bin/db-ping"
+    ]
 }

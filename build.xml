@@ -24,16 +24,7 @@
         </exec>
     </target>
 
-    <target name="phpcb" description="Aggregate tool reports with PHP_CodeBrowser">
-        <exec executable="vbin/phpcb" passthru="true">
-            <arg value="--log"/><arg path="logs"/>
-            <arg value="--source"/><arg path="src"/>
-            <arg value="--output"/><arg path="build/browser"/>
-            <arg value="--excludeOK"/>
-        </exec>
-    </target>
-
-    <target name="check" depends="clean,phpcbf,phpcs,phpcb"/>
+    <target name="check" depends="clean,phpcbf,phpcs"/>
 
     <target name="build" depends="check"/>
 </project>
