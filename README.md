@@ -10,28 +10,21 @@ Optionally includes slave replication checks.
 PHP 5.6+ console command that uses PDO to provide the database drivers:
 - [x] MySQL
 
-## Installing via Composer
+## Installing via phar
 
-The recommended way to install db-ping is through
-[Composer](http://getcomposer.org).
+Before proceeding, you need a working PHP 5.6+ installation.
 
-```bash
-# Install Composer
-curl -sS https://getcomposer.org/installer | php
-```
+The recommended way to install db-ping is by downloading the phar. 
 
-Next, run the Composer command to install the latest stable version:
+See [Releases](https://github.com/ofbeaton/db-ping/releases) for downloads.
 
-```bash
-composer.phar require ofbeaton/db-ping
-```
+Next, run the phar from the command line:
 
-After installing, you can now use it from the command line:
 
 ```bash
-vendor/bin/db-ping help
+php db-ping.phar help
 
-vendor/bin/db-ping mysql --pass=mysecretpassword
+php db-ping.phar mysql --pass=mysecretpassword
 ```
 
 ## Support Me
