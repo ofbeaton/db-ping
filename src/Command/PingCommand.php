@@ -270,12 +270,19 @@ abstract class PingCommand extends Command
         error_reporting($errorLevel);
 
         if ($this->checkStmt === false) {
-            $this->writeReply(
-                'check failed statement: ['.$this->dbh->errorCode().'] '
-                .implode(' ', $this->dbh->errorInfo()),
-                $input,
-                $output
-            );
+            $errorInfo = $this->dbh->errorInfo();
+            // server has gone away
+            if (isset($errorInfo[1]) === true && $errorInfo[1] === 2006) {
+                $this->connected = false;
+                $this->writeReply('connection lost', $input, $output);
+            } else {
+                $this->writeReply(
+                    'check failed statement: [' . $this->dbh->errorCode() . '] '
+                    . implode(' ', $errorInfo),
+                    $input,
+                    $output
+                );
+            }
             return false;
         }
 
