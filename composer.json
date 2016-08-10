@@ -33,7 +33,7 @@
     "require-dev": {
         "phing/phing": "^2.14",
         "squizlabs/php_codesniffer": "^2.6",
-        "ofbeaton/granite": "^0.6.0"
+        "ofbeaton/granite": "^1.0"
     },
     "suggest": {
         "ext-pdo_mysql": "Verify MySQL servers",

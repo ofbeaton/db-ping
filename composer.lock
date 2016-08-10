@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4b77838c56309d7040decaceb847c57c",
-    "content-hash": "2158dd1e36498c9a016806905b6eab2a",
+    "hash": "51ea95befe34bad4bdc7b3c3689b856a",
+    "content-hash": "b668dd8429b3de6b7efb1df07fa1ba22",
     "packages": [
         {
             "name": "symfony/console",
@@ -130,20 +130,20 @@
     "packages-dev": [
         {
             "name": "ofbeaton/granite",
-            "version": "0.6.0",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ofbeaton/granite.git",
-                "reference": "0643c5d71a15d606566172f156de7399c776e4c8"
+                "reference": "7ada3eee640dd2f88418bb62eda4daaa0d713eb3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ofbeaton/granite/zipball/0643c5d71a15d606566172f156de7399c776e4c8",
-                "reference": "0643c5d71a15d606566172f156de7399c776e4c8",
+                "url": "https://api.github.com/repos/ofbeaton/granite/zipball/7ada3eee640dd2f88418bb62eda4daaa0d713eb3",
+                "reference": "7ada3eee640dd2f88418bb62eda4daaa0d713eb3",
                 "shasum": ""
             },
             "require": {
-                "squizlabs/php_codesniffer": "^2.0@dev"
+                "squizlabs/php_codesniffer": "^2.0"
             },
             "type": "library",
             "extra": {
@@ -161,7 +161,7 @@
                     "email": "ofbeaton@gmail.com"
                 },
                 {
-                    "name": "Phpami Community",
+                    "name": "Granite Community",
                     "homepage": "https://github.com/ofbeaton/granite/graphs/contributors"
                 }
             ],
@@ -173,7 +173,7 @@
                 "PHP_CodeSniffer",
                 "code sniffer"
             ],
-            "time": "2015-09-09 16:47:11"
+            "time": "2016-08-10 15:09:37"
         },
         {
             "name": "phing/phing",
