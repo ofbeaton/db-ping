@@ -74,6 +74,12 @@ from odbc:MarketflowAcc: check passed. delay=2000ms, exec=0ms, since success=4.0
 from odbc:MarketflowAcc: check passed. delay=2000ms, exec=0ms, since success=6.0083s, since fail=0s
 ```
 
+The ping SQL query can be repeated more than once per ping with the `repeat` option. This is useful to make the ping test more stressful:
+
+```bash
+$ php bin/db-ping ODBC -d MarketflowAcc -u rou -p rou --repeat 100
+```
+
 ## Support Me
 
 Hi, I'm Finlay Beaton ([@ofbeaton](https://github.com/ofbeaton)). This software is made possible by donations of fellow users like you, encouraging me to toil the midnight hours away and sweat into the code and documentation. 

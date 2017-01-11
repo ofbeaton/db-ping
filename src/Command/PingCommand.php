@@ -179,6 +179,14 @@ abstract class PingCommand extends Command
             'Seconds to wait to connect',
             10
         );
+
+        $this->addOption(
+            'repeat',
+            'r',
+            InputOption::VALUE_OPTIONAL,
+            'Number of times to repeat the ping query',
+            1
+        );
     }//end configure()
 
 
@@ -280,13 +288,16 @@ abstract class PingCommand extends Command
         error_reporting(((E_ALL & ~E_NOTICE) & ~E_WARNING));
         $this->startTime = microtime(true);
         try {
-            $this->checkStmt = $this->dbh->query($this->checkSql);
-            $this->stopTime = microtime(true);
+            $repeat = $input->getOption('repeat');
+            for ($i = 0; $i <= $repeat; $i++) {
+                $this->checkStmt = $this->dbh->query($this->checkSql);
 
-            // close cursor doesn't hurt a ping against a MySql server,
-            // and it is essential for a SQL Server
-            // http://stackoverflow.com/a/26402094/4126114
-            $this->checkStmt->closeCursor();
+                // close cursor doesn't hurt a ping against a MySql server,
+                // and it is essential for a SQL Server
+                // http://stackoverflow.com/a/26402094/4126114
+                $this->checkStmt->closeCursor();
+            }
+            $this->stopTime = microtime(true);
         } catch (\PDOException $e) {
             $this->stopTime = microtime(true);
             error_reporting($errorLevel);
@@ -497,6 +508,7 @@ abstract class PingCommand extends Command
         $msg = 'from '.$this->nickname($input).': '
             .$msg
             .' delay='.$input->getOption('delay').'ms,'
+            .' repeat='.$input->getOption('repeat').'x,'
             .' exec='.$this->execTime().'ms,'
             .' since success='.$sinceGood.'s,'
             .' since fail='.$sinceBad.'s';
