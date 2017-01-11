@@ -35,7 +35,7 @@ class MysqlCommand extends PingCommand
             3306 # default port
         );
 
-        parent::configure();
+        PingCommand::configure();
     }//end configure()
 
     public function driver() {

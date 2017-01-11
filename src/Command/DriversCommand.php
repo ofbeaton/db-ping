@@ -43,6 +43,10 @@ class DriversCommand extends Command
             $table->addRow(['mysql', 'pdo_mysql']);
             $found = true;
         }
+        if (extension_loaded('pdo_odbc') === true) {
+            $table->addRow(['odbc', 'pdo_odbc']);
+            $found = true;
+        }
 
         if ($found === true) {
             $table->render();

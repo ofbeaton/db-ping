@@ -31,6 +31,11 @@ class Application
             $mysqlCmd = new Command\MysqlCommand();
             $this->app->add($mysqlCmd);
         }
+
+        if (extension_loaded('pdo_odbc') === true) {
+            $odbcCmd = new Command\OdbcCommand();
+            $this->app->add($odbcCmd);
+        }
     }//end __construct()
 
 

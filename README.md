@@ -57,6 +57,23 @@ from 127.0.0.1:3306: check passed. delay=2000ms, exec=0ms, since success=4.0028s
 
 To stop the dockerfile: `docker stop some-mysql`
 
+
+### Against a real database server via ODBC
+
+1. Set up your php server for [ODBC](http://php.net/manual/en/ref.pdo-odbc.php)
+2. Add the server you'd like to test against to the `/etc/odbc.ini` file (on linux)
+3. Ping it
+
+```bash
+$ php bin/db-ping ODBC -d MarketflowAcc -u rou -p rou
+DB-PING odbc:MarketflowAcc
+from odbc:MarketflowAcc: connected. delay=2000ms, exec=0ms, since success=0s, since fail=0s
+from odbc:MarketflowAcc: check passed. delay=2000ms, exec=0ms, since success=0s, since fail=0s
+from odbc:MarketflowAcc: check passed. delay=2000ms, exec=0ms, since success=2.0058s, since fail=0s
+from odbc:MarketflowAcc: check passed. delay=2000ms, exec=0ms, since success=4.0071s, since fail=0s
+from odbc:MarketflowAcc: check passed. delay=2000ms, exec=0ms, since success=6.0083s, since fail=0s
+```
+
 ## Support Me
 
 Hi, I'm Finlay Beaton ([@ofbeaton](https://github.com/ofbeaton)). This software is made possible by donations of fellow users like you, encouraging me to toil the midnight hours away and sweat into the code and documentation. 
