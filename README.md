@@ -80,6 +80,20 @@ The ping SQL query can be repeated more than once per ping with the `repeat` opt
 $ php bin/db-ping ODBC -d MarketflowAcc -u rou -p rou --repeat 100
 ```
 
+The output format can be controlled with the `format` option:
+
+```bash
+$ php bin/db-ping ODBC -d MarketflowAcc -u rou -p rou --repeat 100 --format te
+DB-PING odbc:MarketflowAcc
+2017-01-11 14:55:35, 0
+2017-01-11 14:55:35, 3
+2017-01-11 14:55:37, 3
+2017-01-11 14:55:39, 3
+2017-01-11 14:55:41, 3
+```
+
+Also, `et` instead of `te` would shuffle the order
+
 ## Support Me
 
 Hi, I'm Finlay Beaton ([@ofbeaton](https://github.com/ofbeaton)). This software is made possible by donations of fellow users like you, encouraging me to toil the midnight hours away and sweat into the code and documentation. 

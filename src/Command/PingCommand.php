@@ -187,6 +187,15 @@ abstract class PingCommand extends Command
             'Number of times to repeat the ping query',
             1
         );
+
+        $this->addOption(
+            'format',
+            'f',
+            InputOption::VALUE_OPTIONAL,
+            'Output string format: default is "tfmdresxa" to show timestamp,from,msg,delay,repeat,exec,success,fail. a stands for annotated, i.e. "delay=10" instead of "10". Drop letters to drop parts of the output',
+            'tfmdresxa'
+        );
+
     }//end configure()
 
 
@@ -505,13 +514,24 @@ abstract class PingCommand extends Command
         } else {
             $sinceBad = 0.0;
         }
-        $msg = 'from '.$this->nickname($input).': '
-            .$msg
-            .' delay='.$input->getOption('delay').'ms,'
-            .' repeat='.$input->getOption('repeat').'x,'
-            .' exec='.$this->execTime().'ms,'
-            .' since success='.$sinceGood.'s,'
-            .' since fail='.$sinceBad.'s';
+        $msg = [
+            't'=>['time=',date('Y-m-d H:i:s'),''],
+            'f'=>['from ',$this->nickname($input),''],
+            'm'=>['',$msg,''],
+            'd'=>['delay=',$input->getOption('delay'),'ms'],
+            'r'=>['repeat=',$input->getOption('repeat'),'x'],
+            'e'=>['exec=',$this->execTime(),'ms'],
+            's'=>['since success=',$sinceGood,'s'],
+            'x'=>['since fail=',$sinceBad,'s']
+        ];
+        $format=str_split($input->getOption('format'));
+        if(!in_array('a',$format)) {
+          array_walk($msg,function(&$row) { $row = [$row[1]]; });
+        }
+        array_walk($msg,function(&$row) { $row = implode('',$row); });
+        $msg = array_intersect_key($msg,array_flip($format));
+        $msg = array_replace(array_flip($format),$msg);
+        $msg = implode(', ',$msg);
         $output->writeln($msg);
     }//end writeReply()
 }//end class
