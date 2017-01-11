@@ -282,6 +282,11 @@ abstract class PingCommand extends Command
         try {
             $this->checkStmt = $this->dbh->query($this->checkSql);
             $this->stopTime = microtime(true);
+
+            // close cursor doesn't hurt a ping against a MySql server,
+            // and it is essential for a SQL Server
+            // http://stackoverflow.com/a/26402094/4126114
+            $this->checkStmt->closeCursor();
         } catch (\PDOException $e) {
             $this->stopTime = microtime(true);
             error_reporting($errorLevel);
