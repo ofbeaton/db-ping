@@ -19,9 +19,6 @@ class MysqlCommand extends PingCommand
      */
     protected function configure()
     {
-        $this->driver = 'mysql';
-        $this->port = 3306;
-
         $this->addOption(
             'host',
             'l',
@@ -40,6 +37,14 @@ class MysqlCommand extends PingCommand
 
         parent::configure();
     }//end configure()
+
+    public function driver() {
+      return 'mysql';
+    }
+
+    public function dsn(InputInterface $input) {
+        return 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
+    }
 
     /**
      * @param InputInterface  $input  Input from the user.

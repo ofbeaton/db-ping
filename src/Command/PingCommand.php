@@ -44,12 +44,6 @@ abstract class PingCommand extends Command
     protected $dbh = null;
 
     /**
-     * @var string
-     * @since 2016-08-04
-     */
-    protected $driver = null;
-
-    /**
      * @var float
      * @since 2016-08-05
      */
@@ -138,12 +132,8 @@ abstract class PingCommand extends Command
  */
     protected function configure()
     {
-        if ($this->driver === null) {
-            throw new \RuntimeException('Driver must be specified in configure().');
-        }
-
-        $this->setName($this->driver);
-        $this->setDescription('Verify a '.$this->driver.' server is responding');
+        $this->setName($this->driver());
+        $this->setDescription('Verify a '.$this->driver().' server is responding');
 
         $this->addOption(
             'delay',
@@ -338,6 +328,8 @@ abstract class PingCommand extends Command
         return true;
     }//end ping()
 
+    abstract public function dsn(InputInterface $input);
+    abstract public function driver();
 
     /**
      * @param InputInterface  $input  Input from the user.
@@ -352,8 +344,7 @@ abstract class PingCommand extends Command
 
         $this->startTime = microtime(true);
         try {
-            $dsn = 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
-            $this->dbh = new \PDO($dsn, $input->getOption('user'), $input->getOption('pass'), $this->pdoOptions);
+            $this->dbh = new \PDO($this->dsn($input), $input->getOption('user'), $input->getOption('pass'), $this->pdoOptions);
             $this->stopTime = microtime(true);
             $this->connected = true;
         } catch (\PDOException $e) {
