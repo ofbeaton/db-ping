@@ -200,7 +200,7 @@ abstract class PingCommand extends Command
 
         $this->pdoOptions = array_merge($this->pdoOptions, [\PDO::ATTR_TIMEOUT => $input->getOption('timeout')]);
 
-        $output->writeln('DB-PING '.$input->getOption('host').':'.$input->getOption('port'));
+        $output->writeln('DB-PING '.$this->nickname($input));
 
         $signals = false;
         if (function_exists('pcntl_signal') === true) {
@@ -330,6 +330,7 @@ abstract class PingCommand extends Command
 
     abstract public function dsn(InputInterface $input);
     abstract public function driver();
+    abstract public function nickname(InputInterface $input);
 
     /**
      * @param InputInterface  $input  Input from the user.
@@ -418,7 +419,7 @@ abstract class PingCommand extends Command
         }
 
         $output->writeln([
-                          '--- '.$input->getOption('host').':'.$input->getOption('port')
+                          '--- '.$this->nickname($input)
                           .' database ping statistics ---',
                           $this->statsIterations.' tries, '
                                 .$success.' successes, '
@@ -474,7 +475,7 @@ abstract class PingCommand extends Command
         } else {
             $sinceBad = 0.0;
         }
-        $msg = 'from '.$input->getOption('host').':'.$input->getOption('port').': '
+        $msg = 'from '.$this->nickname($input).': '
             .$msg
             .' delay='.$input->getOption('delay').'ms,'
             .' exec='.$this->execTime().'ms,'

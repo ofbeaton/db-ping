@@ -46,6 +46,10 @@ class MysqlCommand extends PingCommand
         return 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
     }
 
+    public function nickname(InputInterface $input) {
+      return $input->getOption('host').':'.$input->getOption('port');
+    }
+
     /**
      * @param InputInterface  $input  Input from the user.
      * @param OutputInterface $output Output to the user.
