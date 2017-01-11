@@ -4,6 +4,7 @@ namespace Ofbeaton\DbPing\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * @since 2016-08-04
@@ -20,6 +21,23 @@ class MysqlCommand extends PingCommand
     {
         $this->driver = 'mysql';
         $this->port = 3306;
+
+        $this->addOption(
+            'host',
+            'l',
+            InputOption::VALUE_REQUIRED,
+            'Host to connect to',
+            '127.0.0.1' # default host
+        );
+
+        $this->addOption(
+            'port',
+            't',
+            InputOption::VALUE_REQUIRED,
+            'Port for server',
+            3306 # default port
+        );
+
         parent::configure();
     }//end configure()
 

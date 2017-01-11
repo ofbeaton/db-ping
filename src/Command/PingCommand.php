@@ -154,14 +154,6 @@ abstract class PingCommand extends Command
         );
 
         $this->addOption(
-            'host',
-            'l',
-            InputOption::VALUE_REQUIRED,
-            'Host to connect to',
-            '127.0.0.1'
-        );
-
-        $this->addOption(
             'iterations',
             'i',
             InputOption::VALUE_REQUIRED,
@@ -180,14 +172,6 @@ abstract class PingCommand extends Command
             'p',
             InputOption::VALUE_REQUIRED,
             'Password for user'
-        );
-
-        $this->addOption(
-            'port',
-            't',
-            InputOption::VALUE_REQUIRED,
-            'Port for server',
-            $this->port
         );
 
         $this->addOption(
