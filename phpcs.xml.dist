@@ -5,7 +5,7 @@
     <file>src</file>
 
     <arg name="extensions" value="php"/>
-    <config name="php_version" value="56000"/>
+    <config name="php_version" value="50600"/>
 
     <rule ref="phpcs/db-ping"/>
 </ruleset>
