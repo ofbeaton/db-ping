@@ -27,6 +27,36 @@ php db-ping.phar help
 php db-ping.phar mysql --pass=mysecretpassword
 ```
 
+## Testing
+
+### Smoke test
+If there is no mysql server running locally, pinging will give a `connection refused` error as below
+
+```bash
+$ php bin/db-ping mysql
+DB-PING 127.0.0.1:3306
+from 127.0.0.1:3306: connection refused. delay=2000ms, exec=0ms, since success=0s, since fail=0s
+from 127.0.0.1:3306: connection refused. delay=2000ms, exec=0ms, since success=0s, since fail=2.0006s
+```
+
+### Against a real MySql server
+Launch a temporary mysql server:
+
+`docker run --name some-mysql --rm -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_USER=user -e MYSQL_PASSWORD=pass -p 3306:3306 mysql`
+
+Wait a few seconds while it initializes, then open another terminal and ping it:
+
+```bash
+$ php bin/db-ping mysql -u user -p pass
+DB-PING 127.0.0.1:3306
+from 127.0.0.1:3306: connected. delay=2000ms, exec=0ms, since success=0s, since fail=0s
+from 127.0.0.1:3306: check passed. delay=2000ms, exec=0ms, since success=0s, since fail=0s
+from 127.0.0.1:3306: check passed. delay=2000ms, exec=0ms, since success=2.0022s, since fail=0s
+from 127.0.0.1:3306: check passed. delay=2000ms, exec=0ms, since success=4.0028s, since fail=0s
+```
+
+To stop the dockerfile: `docker stop some-mysql`
+
 ## Support Me
 
 Hi, I'm Finlay Beaton ([@ofbeaton](https://github.com/ofbeaton)). This software is made possible by donations of fellow users like you, encouraging me to toil the midnight hours away and sweat into the code and documentation. 
