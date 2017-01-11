@@ -24,7 +24,7 @@ class MysqlCommand extends PingCommand
             'l',
             InputOption::VALUE_REQUIRED,
             'Host to connect to',
-            '127.0.0.1' # default host
+            '127.0.0.1' // default host
         );
 
         $this->addOption(
@@ -32,23 +32,40 @@ class MysqlCommand extends PingCommand
             't',
             InputOption::VALUE_REQUIRED,
             'Port for server',
-            3306 # default port
+            3306 // default port
         );
 
         PingCommand::configure();
     }//end configure()
 
-    public function driver() {
-      return 'mysql';
-    }
+    /**
+     * @return string
+     */
+    public function driver()
+    {
+        return 'mysql';
+    }//end driver()
 
-    public function dsn(InputInterface $input) {
-        return 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
-    }
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string
+     */
+    public function dsn(InputInterface $input)
+    {
+        $out = 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
+        return $out;
+    }//end dsn()
 
-    public function nickname(InputInterface $input) {
-      return $input->getOption('host').':'.$input->getOption('port');
-    }
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string
+     */
+    public function nickname(InputInterface $input)
+    {
+        $out = $input->getOption('host').':'.$input->getOption('port');
+        return $out;
+    }//end nickname()
+
 
     /**
      * @param InputInterface  $input  Input from the user.

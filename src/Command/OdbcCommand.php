@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 class OdbcCommand extends MysqlCommand
 {
 
+
     /**
      * @return void
      * @since 2016-08-04
@@ -28,16 +29,31 @@ class OdbcCommand extends MysqlCommand
         PingCommand::configure();
     }//end configure()
 
-    public function driver() {
-      return 'ODBC';
-    }
+    /**
+     * @return string
+     */
+    public function driver()
+    {
+        return 'ODBC';
+    }//end driver()
 
-    public function dsn(InputInterface $input) {
-        return 'odbc:'.$input->getOption('dsn');
-    }
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string
+     */
+    public function dsn(InputInterface $input)
+    {
+        $out = 'odbc:'.$input->getOption('dsn');
+        return $out;
+    }//end dsn()
 
-    public function nickname(InputInterface $input) {
-      return $this->dsn($input);
-    }
-
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string
+     */
+    public function nickname(InputInterface $input)
+    {
+        $out = $this->dsn($input);
+        return $out;
+    }//end nickname()
 }//end class

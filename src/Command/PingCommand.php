@@ -333,8 +333,21 @@ abstract class PingCommand extends Command
         return true;
     }//end ping()
 
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string DSN string to pass to \PDO.
+     */
     abstract public function dsn(InputInterface $input);
+
+    /**
+     * @return string Name of driver.
+     */
     abstract public function driver();
+
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string Nickname to refer to this driver in the console text output.
+     */
     abstract public function nickname(InputInterface $input);
 
     /**
@@ -350,7 +363,8 @@ abstract class PingCommand extends Command
 
         $this->startTime = microtime(true);
         try {
-            $this->dbh = new \PDO($this->dsn($input), $input->getOption('user'), $input->getOption('pass'), $this->pdoOptions);
+            $dsn = $this->dsn($input);
+            $this->dbh = new \PDO($dsn, $input->getOption('user'), $input->getOption('pass'), $this->pdoOptions);
             $this->stopTime = microtime(true);
             $this->connected = true;
         } catch (\PDOException $e) {
@@ -467,7 +481,7 @@ abstract class PingCommand extends Command
      * @return void
      * @since 2016-08-04
      */
-    protected function writeReply($msg, InputInterface $input, OutputInterface $output)
+    protected function writeReply(string $msg, InputInterface $input, OutputInterface $output)
     {
         if ($this->sinceGood !== null) {
             $sinceGood = round((microtime(true) - $this->sinceGood), 4);
