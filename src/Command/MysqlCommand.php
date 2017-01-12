@@ -4,6 +4,7 @@ namespace Ofbeaton\DbPing\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * @since 2016-08-04
@@ -18,10 +19,53 @@ class MysqlCommand extends PingCommand
      */
     protected function configure()
     {
-        $this->driver = 'mysql';
-        $this->port = 3306;
-        parent::configure();
+        $this->addOption(
+            'host',
+            'l',
+            InputOption::VALUE_REQUIRED,
+            'Host to connect to',
+            '127.0.0.1' // default host
+        );
+
+        $this->addOption(
+            'port',
+            't',
+            InputOption::VALUE_REQUIRED,
+            'Port for server',
+            3306 // default port
+        );
+
+        PingCommand::configure();
     }//end configure()
+
+    /**
+     * @return string
+     */
+    public function driver()
+    {
+        return 'mysql';
+    }//end driver()
+
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string
+     */
+    public function dsn(InputInterface $input)
+    {
+        $out = 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
+        return $out;
+    }//end dsn()
+
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string
+     */
+    public function nickname(InputInterface $input)
+    {
+        $out = $input->getOption('host').':'.$input->getOption('port');
+        return $out;
+    }//end nickname()
+
 
     /**
      * @param InputInterface  $input  Input from the user.

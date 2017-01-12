@@ -44,12 +44,6 @@ abstract class PingCommand extends Command
     protected $dbh = null;
 
     /**
-     * @var string
-     * @since 2016-08-04
-     */
-    protected $driver = null;
-
-    /**
      * @var float
      * @since 2016-08-05
      */
@@ -138,12 +132,8 @@ abstract class PingCommand extends Command
  */
     protected function configure()
     {
-        if ($this->driver === null) {
-            throw new \RuntimeException('Driver must be specified in configure().');
-        }
-
-        $this->setName($this->driver);
-        $this->setDescription('Verify a '.$this->driver.' server is responding');
+        $this->setName($this->driver());
+        $this->setDescription('Verify a '.$this->driver().' server is responding');
 
         $this->addOption(
             'delay',
@@ -151,14 +141,6 @@ abstract class PingCommand extends Command
             InputOption::VALUE_REQUIRED,
             'Delay between pings in miliseconds',
             2000
-        );
-
-        $this->addOption(
-            'host',
-            'l',
-            InputOption::VALUE_REQUIRED,
-            'Host to connect to',
-            '127.0.0.1'
         );
 
         $this->addOption(
@@ -183,14 +165,6 @@ abstract class PingCommand extends Command
         );
 
         $this->addOption(
-            'port',
-            't',
-            InputOption::VALUE_REQUIRED,
-            'Port for server',
-            $this->port
-        );
-
-        $this->addOption(
             'user',
             'u',
             InputOption::VALUE_REQUIRED,
@@ -204,6 +178,25 @@ abstract class PingCommand extends Command
             InputOption::VALUE_REQUIRED,
             'Seconds to wait to connect',
             10
+        );
+
+        $this->addOption(
+            'repeat',
+            'r',
+            InputOption::VALUE_OPTIONAL,
+            'Number of times to repeat the ping query',
+            1
+        );
+
+        $this->addOption(
+            'format',
+            'f',
+            InputOption::VALUE_OPTIONAL,
+            'Output string format: default is "tfmdresxa" to show '
+            .'timestamp,from,msg,delay,repeat,exec,success,fail.'
+            .' a stands for annotated, i.e. "delay=10" instead of "10".'
+            .' Drop letters to drop parts of the output',
+            'tfmdresxa'
         );
     }//end configure()
 
@@ -226,7 +219,7 @@ abstract class PingCommand extends Command
 
         $this->pdoOptions = array_merge($this->pdoOptions, [\PDO::ATTR_TIMEOUT => $input->getOption('timeout')]);
 
-        $output->writeln('DB-PING '.$input->getOption('host').':'.$input->getOption('port'));
+        $output->writeln('DB-PING '.$this->nickname($input));
 
         $signals = false;
         if (function_exists('pcntl_signal') === true) {
@@ -306,7 +299,15 @@ abstract class PingCommand extends Command
         error_reporting(((E_ALL & ~E_NOTICE) & ~E_WARNING));
         $this->startTime = microtime(true);
         try {
-            $this->checkStmt = $this->dbh->query($this->checkSql);
+            $repeat = $input->getOption('repeat');
+            for ($i = 0; $i <= $repeat; $i++) {
+                $this->checkStmt = $this->dbh->query($this->checkSql);
+
+                // close cursor doesn't hurt a ping against a MySql server,
+                // and it is essential for a SQL Server
+                // http://stackoverflow.com/a/26402094/4126114
+                $this->checkStmt->closeCursor();
+            }
             $this->stopTime = microtime(true);
         } catch (\PDOException $e) {
             $this->stopTime = microtime(true);
@@ -354,6 +355,22 @@ abstract class PingCommand extends Command
         return true;
     }//end ping()
 
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string DSN string to pass to \PDO.
+     */
+    abstract public function dsn(InputInterface $input);
+
+    /**
+     * @return string Name of driver.
+     */
+    abstract public function driver();
+
+    /**
+     * @param InputInterface $input Input from the user.
+     * @return string Nickname to refer to this driver in the console text output.
+     */
+    abstract public function nickname(InputInterface $input);
 
     /**
      * @param InputInterface  $input  Input from the user.
@@ -368,7 +385,7 @@ abstract class PingCommand extends Command
 
         $this->startTime = microtime(true);
         try {
-            $dsn = 'mysql:host='.$input->getOption('host').':'.$input->getOption('port').';charset=utf8';
+            $dsn = $this->dsn($input);
             $this->dbh = new \PDO($dsn, $input->getOption('user'), $input->getOption('pass'), $this->pdoOptions);
             $this->stopTime = microtime(true);
             $this->connected = true;
@@ -443,7 +460,7 @@ abstract class PingCommand extends Command
         }
 
         $output->writeln([
-                          '--- '.$input->getOption('host').':'.$input->getOption('port')
+                          '--- '.$this->nickname($input)
                           .' database ping statistics ---',
                           $this->statsIterations.' tries, '
                                 .$success.' successes, '
@@ -499,12 +516,60 @@ abstract class PingCommand extends Command
         } else {
             $sinceBad = 0.0;
         }
-        $msg = 'from '.$input->getOption('host').':'.$input->getOption('port').': '
-            .$msg
-            .' delay='.$input->getOption('delay').'ms,'
-            .' exec='.$this->execTime().'ms,'
-            .' since success='.$sinceGood.'s,'
-            .' since fail='.$sinceBad.'s';
+        $msg = [
+                't' => [
+                        'time=',
+                        date('Y-m-d H:i:s'),
+                        '',
+                       ],
+                'f' => [
+                        'from ',
+                        $this->nickname($input),
+                        '',
+                       ],
+                'm' => [
+                        '',
+                        $msg,
+                        '',
+                       ],
+                'd' => [
+                        'delay=',
+                        $input->getOption('delay'),
+                        'ms',
+                       ],
+                'r' => [
+                        'repeat=',
+                        $input->getOption('repeat'),
+                        'x',
+                       ],
+                'e' => [
+                        'exec=',
+                        $this->execTime(),
+                        'ms',
+                       ],
+                's' => [
+                        'since success=',
+                        $sinceGood,
+                        's',
+                       ],
+                'x' => [
+                        'since fail=',
+                        $sinceBad,
+                        's',
+                       ],
+               ];
+        $format = str_split($input->getOption('format'));
+        if (in_array('a', $format) === false) {
+            array_walk($msg, function (&$row) {
+                $row = [$row[1]];
+            });
+        }
+        array_walk($msg, function (&$row) {
+            $row = implode('', $row);
+        });
+        $msg = array_intersect_key($msg, array_flip($format));
+        $msg = array_replace(array_flip($format), $msg);
+        $msg = implode(', ', $msg);
         $output->writeln($msg);
     }//end writeReply()
 }//end class
