@@ -9,6 +9,7 @@ Optionally includes slave replication checks.
 
 PHP 5.6+ console command that uses PDO to provide the database drivers:
 - [x] MySQL
+- [x] ODBC (i.e. Microsoft SQL Server ...)
 
 ## Installing via phar
 
@@ -25,6 +26,8 @@ Next, run the phar from the command line:
 php db-ping.phar help
 
 php db-ping.phar mysql --pass=mysecretpassword
+
+php db-ping.phar ODBC -d OdbcName -u user -p password
 ```
 
 ## Testing
