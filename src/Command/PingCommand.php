@@ -503,7 +503,7 @@ abstract class PingCommand extends Command
      * @return void
      * @since 2016-08-04
      */
-    protected function writeReply(string $msg, InputInterface $input, OutputInterface $output)
+    protected function writeReply($msg, InputInterface $input, OutputInterface $output)
     {
         if ($this->sinceGood !== null) {
             $sinceGood = round((microtime(true) - $this->sinceGood), 4);
