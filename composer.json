@@ -22,18 +22,20 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Ofbeaton\\DbPing\\Tests\\": "tests/"
+            "Ofbeaton\\DbPing\\": "tests/"
         }
     },
     "require": {
         "php": ">=5.6.0",
         "ext-pdo": "*",
-        "symfony/console": "^3.1"
+        "symfony/console": "^3.1",
+        "jakub-onderka/php-parallel-lint": "^0.9.2"
     },
     "require-dev": {
         "phing/phing": "^2.14",
         "squizlabs/php_codesniffer": "^2.6",
-        "ofbeaton/granite": "^1.0"
+        "ofbeaton/granite": "^1.0",
+        "phpunit/phpunit": "^5.7"
     },
     "suggest": {
         "ext-pdo_mysql": "Verify MySQL servers",
@@ -45,5 +47,12 @@
     },
     "bin": [
         "bin/db-ping"
-    ]
+    ],
+    "scripts": {
+      "test": [
+        "parallel-lint . --exclude vendor",
+        "phpunit --stderr --verbose",
+        "bash -c 'if [ \"$TRAVIS_PHP_VERSION\" != \"7.0\" ] && [ \"$TRAVIS_PHP_VERSION\" != \"nightly\" ]; then vbin/phpcs; fi;'"
+      ]
+    }
 }
