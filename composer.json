@@ -28,17 +28,18 @@
     "require": {
         "php": ">=5.6.0",
         "ext-pdo": "*",
-        "symfony/console": "^3.1",
-        "jakub-onderka/php-parallel-lint": "^0.9.2"
+        "symfony/console": "^3.2"
     },
     "require-dev": {
-        "phing/phing": "^2.14",
-        "squizlabs/php_codesniffer": "^2.6",
+        "phing/phing": "^2.16",
+        "squizlabs/php_codesniffer": "^2.8",
         "ofbeaton/granite": "^1.0",
+        "jakub-onderka/php-parallel-lint": "^0.9",
         "phpunit/phpunit": "^5.7"
     },
     "suggest": {
         "ext-pdo_mysql": "Verify MySQL servers",
+        "ext-pdo_odbc": "Verify ODBC connected servers",
         "ext-pcntl": "Linux signal handling for gracefull CTRL-C"
     },
     "config": {
@@ -47,12 +48,5 @@
     },
     "bin": [
         "bin/db-ping"
-    ],
-    "scripts": {
-      "test": [
-        "parallel-lint . --exclude vendor",
-        "phpunit --stderr --verbose",
-        "bash -c 'if [ \"$TRAVIS_PHP_VERSION\" != \"7.0\" ] && [ \"$TRAVIS_PHP_VERSION\" != \"nightly\" ]; then vbin/phpcs; fi;'"
-      ]
-    }
+    ]
 }

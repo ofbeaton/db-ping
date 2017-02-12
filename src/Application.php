@@ -64,7 +64,7 @@ class Application
      * @param string $name Name of command to find.
      * @return Command
      */
-    public function find(string $name)
+    public function find($name)
     {
         $out = $this->app->find($name);
         return $out;

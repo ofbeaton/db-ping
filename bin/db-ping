@@ -13,7 +13,7 @@ set_time_limit(0);
 if (version_compare('5.6.0', PHP_VERSION, '>') === 1) {
     fwrite(
         STDERR,
-        'This version of PHPUnit requires PHP 5.6; using the latest version of PHP is highly recommended.'.PHP_EOL
+        'This version of db-ping requires PHP 5.6; using the latest version of PHP is highly recommended.'.PHP_EOL
     );
     die(1);
 }

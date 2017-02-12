@@ -23,8 +23,9 @@ class ApplicationTest extends\PHPUnit_Framework_TestCase
 
         // the output of the command in the console
         $expected = file_get_contents(__DIR__.'/data/inexistant.regexp');
+        $expected = str_replace("\n", "(?:\r\n|\r|\n)", $expected);
         $actual = $commandTester->getDisplay();
-        // file_put_contents(__DIR__.'/data/inexistant.actual',$actual);
+        //file_put_contents(__DIR__.'/data/inexistant.actual',$actual);
         $this->assertRegExp($expected, $actual);
     }
 

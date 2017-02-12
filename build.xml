@@ -8,6 +8,15 @@
         <mkdir dir="logs"/>
         <mkdir dir="build"/>
     </target>
+    
+    <target name="parallel-lint" description="Lint all php files">
+        <exec executable="vbin/parallel-lint" passthru="true">
+            <arg path="." />
+            <arg value="--exclude"/><arg path="vendor" />
+        </exec>
+    </target>
+    
+    <target name="lint" depends="parallel-lint"/>
 
     <target name="phpcs" description="Generate checkstyle.xml using PHP_CodeSniffer">
         <exec executable="vbin/phpcs" passthru="true"/>
@@ -22,8 +31,17 @@
             <arg value="--no-patch"/>
         </exec>
     </target>
+    
+    <target name="phpunit" description="Verify unit tests">
+        <exec executable="vbin/phpunit" passthru="true">
+            <arg value="--stderr"/>
+            <arg value="--verbose"/>
+        </exec>
+    </target>
 
-    <target name="check" depends="clean,phpcbf,phpcs"/>
+    <target name="check" depends="clean,parallel-lint,phpcs,phpunit"/>
+    
+    <target name="fix" depends="clean,parallel-lint,phpcbf,phpcs,phpunit"/>
 
     <target name="build-phar" description="Creates the phar">
         <mkdir dir="build"/>

@@ -1,6 +1,6 @@
 /^DB-PING inexistant:3306
-(time=\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}, from inexistant:3306, connection refused., delay=2000ms, repeat=1x, exec=\d+ms, since success=0s, since fail=\d\.{0,1}\d*s
+(time=\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}, from inexistant:3306, connection refused., delay=2000ms, repeat=1x, exec=\d+ms, since success=0s, since fail=\d+(?:\.{0,1}\d*)?s
 ){3}--- inexistant:3306 database ping statistics ---
 3 tries, 0 successes, 3 failures, 100% fail tries
-\d\.\d+s time, 0s success, \d\.\d+s fail, 100% fail time
+\d+\.\d+s time, 0s success, \d+\.\d+s fail, 100% fail time
 $/

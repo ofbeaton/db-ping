@@ -98,7 +98,7 @@ DB-PING odbc:MarketflowAcc
 Also, `et` instead of `te` would shuffle the order
 
 ### Unit tests
-Run `composer test`
+Run `vbin/phing check`
 
 ## License
 
