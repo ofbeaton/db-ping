@@ -564,6 +564,7 @@ abstract class PingCommand extends Command
                 $row = [$row[1]];
             });
         }
+        $format = array_diff($format, ['a']);
         array_walk($msg, function (&$row) {
             $row = implode('', $row);
         });

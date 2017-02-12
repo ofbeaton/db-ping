@@ -97,6 +97,9 @@ DB-PING odbc:MarketflowAcc
 
 Also, `et` instead of `te` would shuffle the order
 
+### Unit tests
+Run `composer test`
+
 ## License
 
 This software is distributed under the MIT License. Please see [License file](LICENSE) for more information.

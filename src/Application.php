@@ -58,4 +58,15 @@ class Application
     {
         $this->app->run();
     }//end run()
+
+    /**
+     * @since 2017-01-20
+     * @param string $name Name of command to find.
+     * @return Command
+     */
+    public function find(string $name)
+    {
+        $out = $this->app->find($name);
+        return $out;
+    }//end find()
 }//end class
